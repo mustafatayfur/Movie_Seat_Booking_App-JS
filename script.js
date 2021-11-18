@@ -5,6 +5,24 @@ const count = document.getElementById("count");
 const film = document.getElementById("film");
 const total = document.getElementById("total");
 const container = document.querySelector(".container");
+let filmPrice;
+window.addEventListener("load",()=> {
+    let price = movieSelectBox.options[movieSelectBox.selectedIndex].value;
+    displayUI();
+    updateMovieInfo(price);
+});
+
+const displayUI = () => {
+    const selectedSeatsFromStorage = JSON.parse(localStorage.getItem("selectedSeats"));
+    // console.log(selectedSeatsFromStorage);
+    if(selectedSeatsFromStorage !== null && selectedSeatsFromStorage.length>0){
+        notOccupiedSeats.forEach((seat, index) =>{
+            if(selectedSeatsFromStorage.indexOf(index) > -1){
+                seat.classList.add("selected");
+            }
+        });
+    }
+};
 
 movieSelectBox.addEventListener("change", (e)=> {
     updateMovieInfo(e.target.value);
@@ -13,8 +31,10 @@ movieSelectBox.addEventListener("change", (e)=> {
 
 const updateMovieInfo = (filmPrice)=>{
     let selectedSeats = document.querySelectorAll(".row .selected");
+    //OCCUPİED OLMAYANLARA GÖRE SELECTED SEATLERİN İNDEXLERİNİ TUTAN ARRAY
+    const seatIndexArray = [...selectedSeats].map(seat => [...notOccupiedSeats].indexOf(seat));
+    localStorage.setItem("selectedSeats", JSON.stringify(seatIndexArray));
 
-    // const seatIndexArray = [...selectedSeats].map(seat => [...notOccupiedSeats].indexOf(seat));
 
     const selectedSeatCount = selectedSeats.length;
     count.innerText = selectedSeatCount;
